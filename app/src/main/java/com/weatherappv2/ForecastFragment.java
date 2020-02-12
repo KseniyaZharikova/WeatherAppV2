@@ -2,23 +2,18 @@ package com.weatherappv2;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.weatherappv2.Adapter.WeatherForecastAdapter;
-import com.weatherappv2.Common.Common;
-import com.weatherappv2.Model.WeatherForecastResult;
-import com.weatherappv2.Retrofit.RetrofitClient;
-
-import org.w3c.dom.Text;
-
-import io.reactivex.Scheduler;
+import com.weatherappv2.adapter.WeatherForecastAdapter;
+import com.weatherappv2.common.Utils;
+import com.weatherappv2.model.WeatherForecastResult;
+import com.weatherappv2.retrofit.RetrofitClient;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -38,7 +33,7 @@ public class ForecastFragment extends Fragment {
     TextView txt_city_name,txt_geo_coord;
     RecyclerView recyclerView_forecast;
 
-     static ForecastFragment instance;
+    static ForecastFragment instance;
 
     public static ForecastFragment getInstance() {
         if (instance == null)
@@ -64,11 +59,10 @@ public class ForecastFragment extends Fragment {
         txt_geo_coord = (TextView) itemView.findViewById(R.id.txt_geo_coord);
         recyclerView_forecast = (RecyclerView) itemView.findViewById(R.id.recycler_forecast);
         recyclerView_forecast.setHasFixedSize(true);
-        recyclerView_forecast.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-
+        recyclerView_forecast.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL,false));
 
         getForecastWeatherInformation();
-
 
         return itemView;
 
@@ -89,26 +83,26 @@ public class ForecastFragment extends Fragment {
 
     private void getForecastWeatherInformation() {
         compositeDisposable.add(mService.getForecastWeatherByLatLng(
-                     String.valueOf(Common.current_location.getLatitude()),
-                     String.valueOf(Common.current_location.getLongitude()),
-                            Common.APP_ID,
-                            "metric")
-                      .subscribeOn(Schedulers.io())
-                      .observeOn(AndroidSchedulers.mainThread())
-                      .subscribe(new Consumer<WeatherForecastResult>() {
-                          @Override
-                          public void accept(WeatherForecastResult weatherForecastResult) throws Exception {
-                              displayForCastWeather(weatherForecastResult);
+                String.valueOf(Utils.current_location.getLatitude()),
+                String.valueOf(Utils.current_location.getLongitude()),
+                Utils.APP_ID,
+                "metric")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<WeatherForecastResult>() {
+                    @Override
+                    public void accept(WeatherForecastResult weatherForecastResult) throws Exception {
+                        displayForCastWeather(weatherForecastResult);
 
-                          }
-                      }, new Consumer<Throwable>() {
-                          @Override
-                          public void accept(Throwable throwable) throws Exception {
-                              Log.d("ERROR", "" + throwable.getMessage());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d("ERROR", "" + throwable.getMessage());
 
 
-                          }
-                      })
+                    }
+                })
         );
     }
 

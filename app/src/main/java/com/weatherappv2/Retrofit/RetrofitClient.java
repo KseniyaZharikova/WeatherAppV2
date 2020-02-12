@@ -1,4 +1,4 @@
-package com.weatherappv2.Retrofit;
+package com.weatherappv2.retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -14,6 +14,7 @@ public class RetrofitClient {
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
         return instance;
+
 
     }
 }

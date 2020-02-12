@@ -2,16 +2,15 @@ package com.weatherappv2;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Looper;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -24,11 +23,11 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.weatherappv2.Adapter.ViewPagerAdapter;
-import com.weatherappv2.Common.Common;
+import com.weatherappv2.adapter.ViewPagerAdapter;
+import com.weatherappv2.common.Utils;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements TodayWeatherFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
 
     private Toolbar toolbar;
@@ -64,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements TodayWeatherFragm
 
                         if (report.areAllPermissionsGranted()) {
                             buildLocationRequest();
-                            builLocationCallBack();
-
+                            buildLocationCallBack();
 
                             if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                 
@@ -87,14 +85,14 @@ public class MainActivity extends AppCompatActivity implements TodayWeatherFragm
 
     }
 
-    private void builLocationCallBack() {
+    private void buildLocationCallBack() {
 
         locationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
-                Common.current_location = locationResult.getLastLocation();
+                Utils.current_location = locationResult.getLastLocation();
 
                 viewPager = findViewById(R.id.view_pager);
                 setupViewPager(viewPager);
@@ -123,8 +121,5 @@ public class MainActivity extends AppCompatActivity implements TodayWeatherFragm
         locationRequest.setSmallestDisplacement(10.0f);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
-    }
 }

@@ -1,9 +1,7 @@
 package com.weatherappv2;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,31 +13,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.weatherappv2.Common.Common;
-import com.weatherappv2.Model.WeatherResult;
-import com.weatherappv2.Retrofit.RetrofitClient;
+import com.weatherappv2.common.Utils;
+import com.weatherappv2.model.WeatherResult;
+import com.weatherappv2.retrofit.RetrofitClient;
 
-import org.w3c.dom.Text;
-
-import java.security.acl.LastOwnerException;
-
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.internal.operators.completable.CompletableMerge;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TodayWeatherFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link TodayWeatherFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class TodayWeatherFragment extends Fragment {
 
     ImageView img_weather;
@@ -60,8 +43,6 @@ public class TodayWeatherFragment extends Fragment {
      CompositeDisposable compositeDisposable;
       IOpenWeather mService;
 
-
-
     static  TodayWeatherFragment instance;
 
     public static TodayWeatherFragment getInstance() {
@@ -72,37 +53,16 @@ public class TodayWeatherFragment extends Fragment {
     }
 
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
     public TodayWeatherFragment() {
         compositeDisposable = new CompositeDisposable();
         Retrofit retrofit = RetrofitClient.getInstance();
         mService = retrofit.create(IOpenWeather.class);
-
-    }
-
-    public static TodayWeatherFragment newInstance(String param1, String param2) {
-        TodayWeatherFragment fragment = new TodayWeatherFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
@@ -129,19 +89,18 @@ public class TodayWeatherFragment extends Fragment {
 
 
         getWeatherInformation();
-        
-
 
         return itemView;
 
     }
 
     private void getWeatherInformation() {
-        Log.d("ololo", "Current location " + Common.current_location.getLongitude());
+        Log.d("ololo", "Current location " + Utils.current_location.getLongitude());
+
         compositeDisposable.add(mService.getWeatherByLatLng(
-                String.valueOf(Common.current_location.getLatitude()),
-                String.valueOf(Common.current_location.getLongitude()),
-                Common.APP_ID,
+                String.valueOf(Utils.current_location.getLatitude()),
+                String.valueOf(Utils.current_location.getLongitude()),
+                Utils.APP_ID,
                 "metric")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -154,20 +113,19 @@ public class TodayWeatherFragment extends Fragment {
                                 .append(".png").toString()).into(img_weather);
 
                         txt_city_name.setText(weatherResult.getName());
-                        txt_description.setText(new StringBuilder("Weather in   ")
+                        txt_description.setText(new StringBuilder("Weather in ")
                                 .append(weatherResult.getName()).toString());
                         txt_temperature.setText(new StringBuilder(String.valueOf(weatherResult.getMain().getTemp()))
                                 .append("°C").toString());
-                        txt_data_time.setText(Common.convertUnixToDate(weatherResult.getDt()));
+                        txt_data_time.setText(Utils.convertUnixToDate(weatherResult.getDt()));
                         txt_pressure.setText(new StringBuilder(String.valueOf(weatherResult
                                 .getMain().getPressure())).append("hpa").toString());
                         txt_humidity.setText(new StringBuilder(String.valueOf(weatherResult.
                                 getMain().getHumidity())).append("%").toString());
-                        txt_sunrise.setText(Common.convertUnixToHour(weatherResult.getSys().getSunrise()));
-                        txt_sunset.setText(Common.convertUnixToHour(weatherResult.getSys().getSunset()));
+                        txt_sunrise.setText(Utils.convertUnixToHour(weatherResult.getSys().getSunrise()));
+                        txt_sunset.setText(Utils.convertUnixToHour(weatherResult.getSys().getSunset()));
                         txt_geo_coord.setText(new StringBuilder(weatherResult.getCoord().toString()).toString());
-
-
+                        txt_wind.setText(new StringBuilder(String.valueOf(weatherResult.getWind().getSpeed())));
 
                         weather_panel.setVisibility(View.VISIBLE);
                         loading.setVisibility(View.GONE);
@@ -181,44 +139,6 @@ public class TodayWeatherFragment extends Fragment {
         );
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
     @Override
     public void onDestroy() {
         compositeDisposable.clear();

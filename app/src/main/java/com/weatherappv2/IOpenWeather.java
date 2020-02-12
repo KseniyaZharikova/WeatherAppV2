@@ -1,7 +1,7 @@
 package com.weatherappv2;
 
-import com.weatherappv2.Model.WeatherForecastResult;
-import com.weatherappv2.Model.WeatherResult;
+import com.weatherappv2.model.WeatherForecastResult;
+import com.weatherappv2.model.WeatherResult;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -17,8 +17,7 @@ public interface IOpenWeather {
       Observable <WeatherResult> getWeatherByCityName (@Query("q") String cityName ,
                                                      @Query("appid") String appid,
                                                      @Query("units") String unit);
-      
-            @GET("forecast")
+      @GET("forecast")
             Observable <WeatherForecastResult> getForecastWeatherByLatLng (@Query("lat") String lat,
                                                                            @Query("lon") String lng,
                                                                            @Query("appid") String appid,

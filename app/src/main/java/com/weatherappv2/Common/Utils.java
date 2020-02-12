@@ -1,11 +1,11 @@
-package com.weatherappv2.Common;
+package com.weatherappv2.common;
 
 import android.location.Location;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Common {
+public class Utils {
 
     public static final String APP_ID = "cec9f93385f28a4a6eb9f3bae2fce66c";
 

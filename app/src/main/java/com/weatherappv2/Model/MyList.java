@@ -1,4 +1,4 @@
-package com.weatherappv2.Model;
+package com.weatherappv2.model;
 
 import java.util.List;
 

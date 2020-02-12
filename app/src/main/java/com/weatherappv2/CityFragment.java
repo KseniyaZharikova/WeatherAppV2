@@ -2,7 +2,7 @@ package com.weatherappv2;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -19,12 +19,10 @@ import com.google.gson.reflect.TypeToken;
 import com.label305.asynctask.SimpleAsyncTask;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.squareup.picasso.Picasso;
-import com.weatherappv2.Common.Common;
-import com.weatherappv2.Model.City;
-import com.weatherappv2.Model.WeatherResult;
-import com.weatherappv2.Retrofit.RetrofitClient;
+import com.weatherappv2.common.Utils;
+import com.weatherappv2.model.WeatherResult;
+import com.weatherappv2.retrofit.RetrofitClient;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -118,7 +116,8 @@ public class CityFragment extends Fragment {
             lstCities = new ArrayList<>();
             try{
                 StringBuilder builder = new StringBuilder();
-                InputStream is= getResources().openRawResource(R.raw.city_list);
+                InputStream is = getResources().openRawResource(R.raw.city_list);
+
                 GZIPInputStream gzipInputStream = new GZIPInputStream(is);
 
                 InputStreamReader reader = new InputStreamReader(gzipInputStream);
@@ -184,7 +183,6 @@ public class CityFragment extends Fragment {
 
                 }
             });
-
             materialSearchBar.setLastSuggestions(listCity);
             loading.setVisibility(View.GONE);
 
@@ -193,11 +191,11 @@ public class CityFragment extends Fragment {
 
     private void getWeatherInformation(String cityName) {
         compositeDisposable.add(mService.getWeatherByCityName(cityName,
-                Common.APP_ID,
+                Utils.APP_ID,
                 "metric")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<WeatherResult>() {
+                .subscribe( new Consumer<WeatherResult>() {
                     @Override
                     public void accept(WeatherResult weatherResult) throws Exception {
 
@@ -210,14 +208,15 @@ public class CityFragment extends Fragment {
                                 .append(weatherResult.getName()).toString());
                         txt_temperature.setText(new StringBuilder(String.valueOf(weatherResult.getMain().getTemp()))
                                 .append("°C").toString());
-                        txt_data_time.setText(Common.convertUnixToDate(weatherResult.getDt()));
+                        txt_data_time.setText(Utils.convertUnixToDate(weatherResult.getDt()));
                         txt_pressure.setText(new StringBuilder(String.valueOf(weatherResult
                                 .getMain().getPressure())).append("hpa").toString());
                         txt_humidity.setText(new StringBuilder(String.valueOf(weatherResult.
                                 getMain().getHumidity())).append("%").toString());
-                        txt_sunrise.setText(Common.convertUnixToHour(weatherResult.getSys().getSunrise()));
-                        txt_sunset.setText(Common.convertUnixToHour(weatherResult.getSys().getSunset()));
+                        txt_sunrise.setText(Utils.convertUnixToHour(weatherResult.getSys().getSunrise()));
+                        txt_sunset.setText(Utils.convertUnixToHour(weatherResult.getSys().getSunset()));
                         txt_geo_coord.setText(new StringBuilder(weatherResult.getCoord().toString()).toString());
+                        txt_wind.setText(new StringBuilder(String.valueOf(weatherResult.getWind().getSpeed())));
 
 
 

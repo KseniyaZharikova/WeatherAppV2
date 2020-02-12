@@ -1,8 +1,8 @@
-package com.weatherappv2.Adapter;
+package com.weatherappv2.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.weatherappv2.Common.Common;
-import com.weatherappv2.Model.WeatherForecastResult;
+import com.weatherappv2.common.Utils;
+import com.weatherappv2.model.WeatherForecastResult;
 import com.weatherappv2.R;
 
 public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecastAdapter.MyViewHolder > {
@@ -29,8 +29,7 @@ public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecast
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
-        View itemView= LayoutInflater.from(context).inflate(R.layout.item_weather_forecast,viewGroup,false);
+        View itemView = LayoutInflater.from(context).inflate(R.layout.item_weather_forecast,viewGroup,false);
         return new MyViewHolder(itemView);
     }
 
@@ -42,7 +41,7 @@ public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecast
                 .append(".png").toString()).into(myViewHolder.img_weather);
 
         myViewHolder.txt_date.setText(new StringBuilder
-                (Common.convertUnixToDate(weatherForecastResult.list.get(i).dt)));
+                (Utils.convertUnixToDate(weatherForecastResult.list.get(i).dt)));
         myViewHolder.txt_description
                 .setText(new StringBuilder(weatherForecastResult.list.get(i).weather.get(0).getDescription()));
 
@@ -66,7 +65,7 @@ public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecast
             super(itemView);
 
             img_weather = (ImageView) itemView.findViewById(R.id.img_weather);
-            txt_date =(TextView) itemView.findViewById(R.id.txt_date);
+            txt_date    =(TextView) itemView.findViewById(R.id.txt_date);
             txt_description = (TextView) itemView.findViewById(R.id.txt_description);
             txt_temperature = (TextView) itemView.findViewById(R.id.txt_temperature);
 
